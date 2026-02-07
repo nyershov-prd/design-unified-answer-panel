@@ -13,10 +13,7 @@ import {
     Info, 
     ChevronDown, 
     Copy, 
-    Maximize2, 
-    Wand2,
     AlignLeft,
-    Minimize2,
     X,
     ChevronLeft,
     ChevronRight,
@@ -65,20 +62,11 @@ export const AnswerEditor: React.FC<AnswerEditorProps> = ({
     onAIClick,
     metadata
 }) => {
-  const [isFocused, setIsFocused] = useState(false);
-
   // Use provided metadata or defaults
   const expirationDate = metadata?.expirationDate || new Date('2026-03-15');
   const today = new Date();
   const isExpired = expirationDate < today;
   const formattedExpiration = expirationDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-
-  // Mock AI actions
-  const handleAIAction = (action: 'concise' | 'expand' | 'formal') => {
-      if (action === 'concise') onChange(value.split(' ').slice(0, value.split(' ').length - 5).join(' ') + "...");
-      if (action === 'expand') onChange(value + " Additionally, we have consistently demonstrated strong performance in this sector.");
-      if (action === 'formal') onChange(value.replace("We've", "We have").replace("it's", "it is"));
-  };
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md">
@@ -158,7 +146,7 @@ export const AnswerEditor: React.FC<AnswerEditorProps> = ({
         </div>
       </div>
 
-      <div className="p-6 relative group">
+      <div className="p-6 relative">
         
         <div className="flex items-center justify-between mb-4">
             <div className="text-xs text-gray-500">
@@ -188,27 +176,9 @@ export const AnswerEditor: React.FC<AnswerEditorProps> = ({
             <textarea
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
                 className="w-full min-h-[180px] text-base leading-relaxed text-gray-800 resize-none focus:outline-none bg-transparent"
                 placeholder="Type your answer here..."
             />
-            
-            {/* AI Floating Toolbar - Visible when focused or hovered */}
-            <div className={cn(
-                "absolute top-2 right-2 flex gap-1 bg-white shadow-lg border border-gray-100 rounded-lg p-1 transition-opacity duration-200",
-                isFocused ? "opacity-100" : "opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
-            )}>
-                <button onClick={() => handleAIAction('concise')} className="p-1.5 hover:bg-gray-50 rounded text-gray-500 hover:text-purple-600 text-xs flex items-center gap-1" title="Make concise">
-                    <Minimize2 className="w-3.5 h-3.5" />
-                </button>
-                <button onClick={() => handleAIAction('expand')} className="p-1.5 hover:bg-gray-50 rounded text-gray-500 hover:text-purple-600 text-xs flex items-center gap-1" title="Expand">
-                    <Maximize2 className="w-3.5 h-3.5" />
-                </button>
-                <button onClick={() => handleAIAction('formal')} className="p-1.5 hover:bg-gray-50 rounded text-gray-500 hover:text-purple-600 text-xs flex items-center gap-1" title="Fix formatting">
-                    <Wand2 className="w-3.5 h-3.5" />
-                </button>
-            </div>
         </div>
 
         {/* Evidence / Metadata Chips */}
