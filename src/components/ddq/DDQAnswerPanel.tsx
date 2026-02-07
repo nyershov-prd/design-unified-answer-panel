@@ -19,7 +19,7 @@ const INITIAL_ANSWER = `Founded in 2018, Pinetree Financial Group is a private e
 
 Throughout our development, we have maintained a disciplined value-oriented buyout approach as our core investment philosophy. While staying true to these fundamental principles, we have made strategic refinements to our investment process, including the introduction of sector rotation frameworks in 2022 to enhance our portfolio management capabilities.`;
 
-const ANSWER_CANDIDATES = [
+const INITIAL_ANSWER_CANDIDATES = [
     {
         id: '1',
         text: INITIAL_ANSWER,
@@ -38,8 +38,9 @@ const ANSWER_CANDIDATES = [
 ];
 
 export const DDQAnswerPanel: React.FC = () => {
+  const [answerCandidates, setAnswerCandidates] = useState(INITIAL_ANSWER_CANDIDATES);
   const [currentAnswerIndex, setCurrentAnswerIndex] = useState(0);
-  const [answer, setAnswer] = useState(ANSWER_CANDIDATES[0].text);
+  const [answer, setAnswer] = useState(answerCandidates[0].text);
   const [isSuggestedLanguageOpen, setIsSuggestedLanguageOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isApplied, setIsApplied] = useState(false);
@@ -51,17 +52,37 @@ export const DDQAnswerPanel: React.FC = () => {
 
   // When cycling through answers, we update the editor content
   const handlePrevAnswer = () => {
-    const newIndex = currentAnswerIndex > 0 ? currentAnswerIndex - 1 : ANSWER_CANDIDATES.length - 1;
+    const newIndex = currentAnswerIndex > 0 ? currentAnswerIndex - 1 : answerCandidates.length - 1;
     setCurrentAnswerIndex(newIndex);
-    setAnswer(ANSWER_CANDIDATES[newIndex].text);
+    setAnswer(answerCandidates[newIndex].text);
     setIsApplied(false);
   };
 
   const handleNextAnswer = () => {
-    const newIndex = currentAnswerIndex < ANSWER_CANDIDATES.length - 1 ? currentAnswerIndex + 1 : 0;
+    const newIndex = currentAnswerIndex < answerCandidates.length - 1 ? currentAnswerIndex + 1 : 0;
     setCurrentAnswerIndex(newIndex);
-    setAnswer(ANSWER_CANDIDATES[newIndex].text);
+    setAnswer(answerCandidates[newIndex].text);
     setIsApplied(false);
+  };
+
+  const handleAddAnswerFromBank = (answerText: string) => {
+    // Create a new answer candidate
+    const newCandidate = {
+      id: `${Date.now()}`,
+      text: answerText,
+      source: 'Answer Bank'
+    };
+    
+    // Add to the list
+    const updatedCandidates = [...answerCandidates, newCandidate];
+    setAnswerCandidates(updatedCandidates);
+    
+    // Navigate to the new answer
+    const newIndex = updatedCandidates.length - 1;
+    setCurrentAnswerIndex(newIndex);
+    setAnswer(answerText);
+    setIsApplied(false);
+    setIsSearchOpen(false);
   };
 
 
@@ -112,7 +133,7 @@ export const DDQAnswerPanel: React.FC = () => {
                 isApplied={isApplied}
                 onApply={() => setIsApplied(true)}
                 currentCount={currentAnswerIndex + 1}
-                totalCount={ANSWER_CANDIDATES.length}
+                totalCount={answerCandidates.length}
                 onNext={handleNextAnswer}
                 onPrev={handlePrevAnswer}
                 onSearchClick={() => setIsSearchOpen(true)}
@@ -141,11 +162,7 @@ export const DDQAnswerPanel: React.FC = () => {
       <AnswerBankSearchModal 
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
-        onSelect={(answerText) => {
-          console.log('Selected answer:', answerText);
-          setAnswer(answerText);
-          setIsSearchOpen(false);
-        }}
+        onSelect={handleAddAnswerFromBank}
       />
     </div>
   );
