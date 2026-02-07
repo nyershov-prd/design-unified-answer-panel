@@ -20,7 +20,9 @@ import {
     X,
     ChevronLeft,
     ChevronRight,
-    Search
+    Search,
+    Clock,
+    Users
 } from 'lucide-react';
 
 interface AnswerEditorProps {
@@ -220,6 +222,14 @@ export const AnswerEditor: React.FC<AnswerEditorProps> = ({
                     <X className="w-2.5 h-2.5" />
                 </button>
             </div>
+
+            <Badge variant="outline" className="text-orange-600 border-orange-200 bg-orange-50" icon={<Clock className="w-3 h-3" />}>
+                Expiring in 30 days
+            </Badge>
+
+            <Badge variant="outline" className="text-blue-600 border-blue-200 bg-blue-50" icon={<Users className="w-3 h-3" />}>
+                Used in 3 DDQs
+            </Badge>
         </div>
 
         {/* Entity Chips */}
