@@ -56,6 +56,12 @@ export const AnswerEditor: React.FC<AnswerEditorProps> = ({
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
+  // Mock expiration date - in production this would come from props
+  const expirationDate = new Date('2026-03-15'); // Example: March 15, 2026
+  const today = new Date();
+  const isExpired = expirationDate < today;
+  const formattedExpiration = expirationDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
   // Mock AI actions
   const handleAIAction = (action: 'concise' | 'expand' | 'formal') => {
       if (action === 'concise') onChange(value.split(' ').slice(0, value.split(' ').length - 5).join(' ') + "...");
@@ -223,8 +229,12 @@ export const AnswerEditor: React.FC<AnswerEditorProps> = ({
                 </button>
             </div>
 
-            <Badge variant="outline" className="text-orange-600 border-orange-200 bg-orange-50" icon={<Clock className="w-3 h-3" />}>
-                Expiring in 30 days
+            <Badge variant="outline" className={cn(
+                isExpired 
+                    ? "text-red-600 border-red-200 bg-red-50" 
+                    : "text-orange-600 border-orange-200 bg-orange-50"
+            )} icon={<Clock className="w-3 h-3" />}>
+                Expires {formattedExpiration}
             </Badge>
 
             <Badge variant="outline" className="text-blue-600 border-blue-200 bg-blue-50" icon={<Users className="w-3 h-3" />}>
