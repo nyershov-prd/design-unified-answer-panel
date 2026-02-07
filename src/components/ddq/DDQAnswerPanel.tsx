@@ -13,7 +13,7 @@ import {
 import { cn } from '../../lib/utils';
 import { AnswerEditor } from './AnswerEditor';
 import { SuggestedLanguageSection } from './SuggestedLanguageSection';
-import { SearchAnswerBankModal } from './SearchAnswerBankModal';
+import { AnswerBankSearchModal } from './AnswerBankSearchModal';
 
 const INITIAL_ANSWER = `Founded in 2018, Pinetree Financial Group is a private equity firm that has strategically focused on lower- and mid-market opportunities throughout our operating history. Our development has been marked by.
 
@@ -138,13 +138,13 @@ export const DDQAnswerPanel: React.FC = () => {
 
       </div>
 
-      <SearchAnswerBankModal 
+      <AnswerBankSearchModal 
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
-        onSelect={(answerId) => {
-          console.log('Selected answer:', answerId);
+        onSelect={(answerText) => {
+          console.log('Selected answer:', answerText);
+          setAnswer(answerText);
           setIsSearchOpen(false);
-          // Here you would load the selected answer
         }}
       />
     </div>
