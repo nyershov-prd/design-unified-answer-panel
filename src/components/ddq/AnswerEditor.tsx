@@ -40,6 +40,16 @@ interface AnswerEditorProps {
   // Action props
   onSearchClick?: () => void;
   onAIClick?: () => void;
+
+  // Metadata props
+  metadata?: {
+    hasAnswerBank?: boolean;
+    hasAIGenerated?: boolean;
+    documentName?: string;
+    documentCount?: number;
+    expirationDate?: Date;
+    usedInDDQs?: number;
+  };
 }
 
 export const AnswerEditor: React.FC<AnswerEditorProps> = ({ 
@@ -52,12 +62,13 @@ export const AnswerEditor: React.FC<AnswerEditorProps> = ({
     onNext,
     onPrev,
     onSearchClick,
-    onAIClick
+    onAIClick,
+    metadata
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
-  // Mock expiration date - in production this would come from props
-  const expirationDate = new Date('2026-03-15'); // Example: March 15, 2026
+  // Use provided metadata or defaults
+  const expirationDate = metadata?.expirationDate || new Date('2026-03-15');
   const today = new Date();
   const isExpired = expirationDate < today;
   const formattedExpiration = expirationDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -202,44 +213,54 @@ export const AnswerEditor: React.FC<AnswerEditorProps> = ({
 
         {/* Evidence / Metadata Chips */}
         <div className="flex flex-wrap gap-2 mt-4">
-            <div className="group relative inline-flex">
-                <Badge variant="outline" className="text-gray-600 pr-5" icon={<BookOpen className="w-3 h-3" />}>
-                    Answer Bank
-                </Badge>
-                <button className="absolute right-1 top-1/2 -translate-y-1/2 p-0.5 rounded-full text-gray-400 hover:bg-gray-100 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <X className="w-2.5 h-2.5" />
-                </button>
-            </div>
+            {metadata?.hasAnswerBank && (
+                <div className="group relative inline-flex">
+                    <Badge variant="outline" className="text-gray-600 pr-5" icon={<BookOpen className="w-3 h-3" />}>
+                        Answer Bank
+                    </Badge>
+                    <button className="absolute right-1 top-1/2 -translate-y-1/2 p-0.5 rounded-full text-gray-400 hover:bg-gray-100 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <X className="w-2.5 h-2.5" />
+                    </button>
+                </div>
+            )}
             
-            <div className="group relative inline-flex">
-                <Badge variant="outline" className="text-gray-600 pr-5" icon={<Sparkles className="w-3 h-3" />}>
-                    AI generated
+            {metadata?.hasAIGenerated && (
+                <div className="group relative inline-flex">
+                    <Badge variant="outline" className="text-gray-600 pr-5" icon={<Sparkles className="w-3 h-3" />}>
+                        AI generated
+                    </Badge>
+                    <button className="absolute right-1 top-1/2 -translate-y-1/2 p-0.5 rounded-full text-gray-400 hover:bg-gray-100 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <X className="w-2.5 h-2.5" />
+                    </button>
+                </div>
+            )}
+
+            {metadata?.documentName && (
+                <div className="group relative inline-flex">
+                    <Badge variant="secondary" className="bg-purple-50 text-purple-700 border-purple-100 pr-6" icon={<FileText className="w-3 h-3 text-purple-600" />}>
+                        {metadata.documentName} {metadata.documentCount && <span className="ml-1 bg-purple-200 text-purple-800 px-1 rounded text-[10px]">{metadata.documentCount}</span>}
+                    </Badge>
+                    <button className="absolute right-1 top-1/2 -translate-y-1/2 p-0.5 rounded-full text-purple-400 hover:bg-purple-100 hover:text-purple-700 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <X className="w-2.5 h-2.5" />
+                    </button>
+                </div>
+            )}
+
+            {metadata?.expirationDate && (
+                <Badge variant="outline" className={cn(
+                    isExpired 
+                        ? "text-red-600 border-red-200 bg-red-50" 
+                        : "text-orange-600 border-orange-200 bg-orange-50"
+                )} icon={<Clock className="w-3 h-3" />}>
+                    Expires {formattedExpiration}
                 </Badge>
-                <button className="absolute right-1 top-1/2 -translate-y-1/2 p-0.5 rounded-full text-gray-400 hover:bg-gray-100 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <X className="w-2.5 h-2.5" />
-                </button>
-            </div>
+            )}
 
-            <div className="group relative inline-flex">
-                <Badge variant="secondary" className="bg-purple-50 text-purple-700 border-purple-100 pr-6" icon={<FileText className="w-3 h-3 text-purple-600" />}>
-                    DDQ_Past 1.docx <span className="ml-1 bg-purple-200 text-purple-800 px-1 rounded text-[10px]">2</span>
+            {metadata?.usedInDDQs !== undefined && (
+                <Badge variant="outline" className="text-blue-600 border-blue-200 bg-blue-50" icon={<Users className="w-3 h-3" />}>
+                    Used in {metadata.usedInDDQs} DDQ{metadata.usedInDDQs !== 1 ? 's' : ''}
                 </Badge>
-                <button className="absolute right-1 top-1/2 -translate-y-1/2 p-0.5 rounded-full text-purple-400 hover:bg-purple-100 hover:text-purple-700 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <X className="w-2.5 h-2.5" />
-                </button>
-            </div>
-
-            <Badge variant="outline" className={cn(
-                isExpired 
-                    ? "text-red-600 border-red-200 bg-red-50" 
-                    : "text-orange-600 border-orange-200 bg-orange-50"
-            )} icon={<Clock className="w-3 h-3" />}>
-                Expires {formattedExpiration}
-            </Badge>
-
-            <Badge variant="outline" className="text-blue-600 border-blue-200 bg-blue-50" icon={<Users className="w-3 h-3" />}>
-                Used in 3 DDQs
-            </Badge>
+            )}
         </div>
 
         {/* Entity Chips */}

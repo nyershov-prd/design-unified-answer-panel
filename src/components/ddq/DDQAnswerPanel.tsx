@@ -23,17 +23,41 @@ const INITIAL_ANSWER_CANDIDATES = [
     {
         id: '1',
         text: INITIAL_ANSWER,
-        source: 'Current Draft'
+        source: 'Current Draft',
+        metadata: {
+            hasAnswerBank: true,
+            hasAIGenerated: false,
+            documentName: 'DDQ_Past 1.docx',
+            documentCount: 2,
+            expirationDate: new Date('2026-03-14'),
+            usedInDDQs: 3
+        }
     },
     {
         id: '2',
         text: `Pinetree Financial Group, established in 2018, specializes in lower- and mid-market private equity. We adhere to a value-oriented buyout strategy while adapting our processes, notably adding sector rotation frameworks in 2022 to boost portfolio management.`,
-        source: 'AI Concise'
+        source: 'AI Concise',
+        metadata: {
+            hasAnswerBank: false,
+            hasAIGenerated: true,
+            documentName: undefined,
+            documentCount: undefined,
+            expirationDate: new Date('2025-12-31'),
+            usedInDDQs: 1
+        }
     },
     {
         id: '3',
         text: `Since our inception in 2018, Pinetree Financial Group has been dedicated to uncovering opportunities within the lower- and mid-market sectors. Our journey is defined by a steadfast commitment to a value-oriented buyout philosophy. Over the years, we have evolved our investment strategies to remain agile, most significantly with the implementation of sector rotation frameworks in 2022, which has substantially strengthened our portfolio management infrastructure.`,
-        source: 'Marketing V2'
+        source: 'Marketing V2',
+        metadata: {
+            hasAnswerBank: true,
+            hasAIGenerated: false,
+            documentName: 'Marketing_Deck_Q4.pptx',
+            documentCount: 5,
+            expirationDate: new Date('2026-06-30'),
+            usedInDDQs: 7
+        }
     }
 ];
 
@@ -70,7 +94,15 @@ export const DDQAnswerPanel: React.FC = () => {
     const newCandidate = {
       id: `${Date.now()}`,
       text: answerText,
-      source: 'Answer Bank'
+      source: 'Answer Bank',
+      metadata: {
+        hasAnswerBank: true,
+        hasAIGenerated: false,
+        documentName: undefined,
+        documentCount: undefined,
+        expirationDate: new Date('2026-12-31'),
+        usedInDDQs: 0
+      }
     };
     
     // Add to the list
@@ -141,6 +173,7 @@ export const DDQAnswerPanel: React.FC = () => {
                   console.log('AI icon clicked, opening section');
                   setIsSuggestedLanguageOpen(!isSuggestedLanguageOpen);
                 }}
+                metadata={answerCandidates[currentAnswerIndex]?.metadata}
              />
         </div>
 
