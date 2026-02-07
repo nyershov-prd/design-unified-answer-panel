@@ -13,6 +13,7 @@ import {
 import { cn } from '../../lib/utils';
 import { AnswerEditor } from './AnswerEditor';
 import { SuggestedLanguageSection } from './SuggestedLanguageSection';
+import { SearchAnswerBankModal } from './SearchAnswerBankModal';
 
 const INITIAL_ANSWER = `Founded in 2018, Pinetree Financial Group is a private equity firm that has strategically focused on lower- and mid-market opportunities throughout our operating history. Our development has been marked by.
 
@@ -40,6 +41,7 @@ export const DDQAnswerPanel: React.FC = () => {
   const [currentAnswerIndex, setCurrentAnswerIndex] = useState(0);
   const [answer, setAnswer] = useState(ANSWER_CANDIDATES[0].text);
   const [isSuggestedLanguageOpen, setIsSuggestedLanguageOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isApplied, setIsApplied] = useState(false);
 
   // Debug: Log state changes
@@ -113,6 +115,7 @@ export const DDQAnswerPanel: React.FC = () => {
                 totalCount={ANSWER_CANDIDATES.length}
                 onNext={handleNextAnswer}
                 onPrev={handlePrevAnswer}
+                onSearchClick={() => setIsSearchOpen(true)}
                 onAIClick={() => {
                   console.log('AI icon clicked, opening section');
                   setIsSuggestedLanguageOpen(!isSuggestedLanguageOpen);
@@ -134,6 +137,16 @@ export const DDQAnswerPanel: React.FC = () => {
         <CollapsibleSection icon={<MessageSquare className="w-4 h-4" />} title="Replies" />
 
       </div>
+
+      <SearchAnswerBankModal 
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onSelect={(answerId) => {
+          console.log('Selected answer:', answerId);
+          setIsSearchOpen(false);
+          // Here you would load the selected answer
+        }}
+      />
     </div>
   );
 };
